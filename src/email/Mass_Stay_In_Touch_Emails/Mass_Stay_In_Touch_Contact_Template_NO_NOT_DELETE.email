@@ -1,0 +1,22 @@
+Hi {!Contact.FirstName},
+I'm updating my address book and want to make sure I have your correct contact information so we can stay in touch. Can you take a look at the info I have for you below and let me know if it's out of date?
+
+{!NullValue(Contact.Salutation, "(Salutation)")} {!NullValue(Contact.FirstName, "(First Name)")} {!NullValue(Contact.LastName, "(Last Name)")}
+{!NullValue(Contact.Title, "(Title)")}
+{!NullValue(Contact.Department, "(Department)")}
+
+{!NullValue(Account.Name, "(Company)")}
+{!NullValue(Contact.MailingAddress, "(Mailing Address)")}
+
+{!NullValue(Contact.Email, "(Email)")}
+{!NullValue(Contact.Phone, "(Phone)")}
+{!NullValue(Contact.MobilePhone, "(Mobile)")}
+{!NullValue(Contact.Fax, "(Fax)")}
+{!NullValue(Contact.AssistantName, "(Assistant)")}
+{!NullValue(Contact.AssistantPhone, "(Assistant Phone)")}
+
+These details are correct!  Click this link to confirm https://msitdev-developer-edition.na15.force.com/stayingintouch?ref={!Stay_In_Touch_Request__c.Id}&status=Confirmed
+
+These details need to be updated! https://msitdev-developer-edition.na15.force.com/stayingintouch?ref={!Stay_In_Touch_Request__c.Id}&status=Change
+
+{!Stay_In_Touch_Request__c.Signature__c}
