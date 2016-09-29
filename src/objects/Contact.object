@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Last_MSIT_Message__c</fullName>
+        <description>Message from the MSIT recipient to the Contact Owner. Entered while changing data.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Most recent message from this person entered while changing their details.</inlineHelpText>
+        <label>Last MSIT Message</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Last_MSIT_Request_Result__c</fullName>
+        <description>Result of the last MSIT request. Notification workflow to requesting user is based on values of this field.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Result of the last MSIT request</inlineHelpText>
+        <label>Last MSIT Request Result</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Changed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Confirmed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Last_MSIT_Response_Datetime__c</fullName>
+        <description>Date time of the last time a Contact provided a response to a Stay In Touch Request</description>
+        <externalId>false</externalId>
+        <label>Last MSIT Response Datetime</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Last_MSIT_Sent_Datetime__c</fullName>
+        <description>When the last Stay In Touch Request was sent.</description>
+        <externalId>false</externalId>
+        <label>Last MSIT Sent Datetime</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <listViews>
+        <fullName>Stay_In_Touch_Contacts</fullName>
+        <filterScope>Everything</filterScope>
+        <label>Stay In Touch Contacts</label>
+    </listViews>
+    <searchLayouts>
+        <listViewButtons>Mass_Stay_In_Touch_Request</listViewButtons>
+    </searchLayouts>
+    <webLinks>
+        <fullName>Mass_Stay_In_Touch_Request</fullName>
+        <availability>online</availability>
+        <description>Enable users to run the Mass Stay In Touch Request functionality with the Contacts that have been selected in the focus ListView.</description>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Request Stay In Touch</masterLabel>
+        <openType>sidebar</openType>
+        <page>MSIT_AdjustEmailAndSend</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+</CustomObject>
