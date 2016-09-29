@@ -1,0 +1,205 @@
+<!-- 
+    Copyright (C) 2016  Manu Erwin
+
+//  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License for more details.
+
+//  You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    Type:       Visualforce Page for Mass Stay In Touch Requests - External User Responds and Submits
+    Purpose:    If the recipient indicates no changes, they should be shown a web page with a thank you message.
+                If however they have indicated that changes are needed, they should be shown a web page that:
+                    - Advises changes will be notified to the internal user’s email
+                    - Displays a list of fields with values
+                    - Allows them to enter a message to the internal user
+                    - Allows them to submit the changes
+                    - Shows them the thank you message
+                URL parameters for this page:
+                    - "status" with possible values of Confirmed or Change
+                    - "ref"
+                    e.g., https://msitdev-developer-edition.na15.force.com/stayingintouch?ref=a00i000000cKgAP&status=Confirmed
+                    e.g., https://msitdev-developer-edition.na15.force.com/stayingintouch?ref=a00i000000h3hRD&status=Change
+
+                Note: should an "Authorization Required" error ever be seen, it is likely due to the Force.com Site Guest User
+                not having sharing access to the Contact record in question.
+                
+    Used By:    Force.com Site
+    History:    see https://github.com/manuerwin/salesforce-mass-stay-in-touch
+-->
+<apex:page docType="html-5.0" controller="MSIT_RespondAndSubmit" applyHtmlTag="false" showHeader="false" standardStylesheets="false" cache="false" showChat="false" sidebar="false" action="{!processResponse}" >
+
+    <head>
+        <title>Staying in Touch</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+
+        <apex:stylesheet value="{!URLFOR($Resource.bootstrap_3_3_6, 'bootstrap-3.3.6-dist/css/bootstrap.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.bootstrap_3_3_6, 'bootstrap-3.3.6-dist/css/bootstrap-theme.min.css')}"/>
+
+        <apex:includeScript value="{!URLFOR($Resource.bootstrap_3_3_6, 'bootstrap-3.3.6-dist/js/bootstrap.min.js')}"/>
+
+        <style>
+            @media ( min-width: 48em ) {
+                div.navbar-header {
+                    width:70%;
+                }
+            }
+            @media ( min-width: 64em ) {
+                div.navbar-header {
+                    width:85%;
+                }
+            }
+        </style>
+    </head>
+
+    <apex:form id="theForm" html-role="form" >
+        <apex:outputPanel id="mainContainer" layout="block" styleClass="container" >
+
+            <!-- Show thanks for confirming the current details are correct -->
+            <apex:outputPanel id="confirmMessage" layout="block" styleClass="row alert" rendered="{!status == 'Confirmed'}" >
+                <apex:outputPanel id="thanksMessage" layout="block" styleClass="col-xs-12 col-sm-6 alert alert-success" >
+                    <p class="text-success">Thanks for confirming all your details are correct!</p>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <!-- Provide contact fields for update -->
+            <apex:outputPanel id="changed" layout="block" styleClass="row" rendered="{!status == 'Change'}" >
+                <apex:outputPanel id="information" layout="block" styleClass="col-xs-12" >
+                    <h3>Staying in touch</h3>
+                    <p class="text-primary">Please enter your updated information below!</p>
+                    <p class="text-info">Information entered in this section will be sent to {!contactOwnerName} : {!contactOwnerEmail}. For further information, please [read our Privacy Statement].</p>
+                </apex:outputPanel>
+
+                <!-- Left side fields -->
+                <apex:outputPanel id="leftFields" layout="block" styleClass="col-sm-6" >
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Salutation:" for="Salutation" />
+                        <apex:inputText id="Salutation" value="{!salutation}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="First Name:" for="FirstName" />
+                        <apex:inputText id="FirstName" value="{!firstName}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Last Name:" for="LastName" />
+                        <apex:inputText id="LastName" value="{!lastName}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Street:" for="MailingStreet" />
+                        <apex:inputText id="MailingStreet" value="{!mailingStreet}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="City:" for="MailingCity" />
+                        <apex:inputText id="MailingCity" value="{!mailingCity}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="State:" for="MailingState" />
+                        <apex:inputText id="MailingState" value="{!mailingState}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Postal Code:" for="MailingPostalCode" />
+                        <apex:inputText id="MailingPostalCode" value="{!mailingPostalCode}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Country:" for="MailingCountry" />
+                        <apex:inputText id="MailingCountry" value="{!mailingCountry}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Email:" for="Email" />
+                        <apex:input id="Email" value="{!email}" type="email" styleClass="form-control" html-placeholder="you@example.com" html-pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" title="Please enter a valid email address in the form 'you@example.com'" />
+                    </apex:outputPanel>
+                </apex:outputPanel>
+
+                <!-- Right side fields - responsive design depending on device -->
+                <apex:outputPanel id="rightFields" layout="block" styleClass="col-sm-6">
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Company:" for="AccountName" />
+                        <apex:inputText id="AccountName" value="{!company}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Title:" for="Title" />
+                        <apex:inputText id="Title" value="{!title}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Department:" for="Department" />
+                        <apex:inputText id="Department" value="{!department}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Phone:" for="Phone" />
+                        <apex:input id="Phone" value="{!phone}" type="tel" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Mobile:" for="MobilePhone" />
+                        <apex:input id="MobilePhone" value="{!mobilePhone}" type="tel" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Home Phone:" for="HomePhone" />
+                        <apex:input id="HomePhone" value="{!homePhone}" type="tel" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Fax:" for="Fax" />
+                        <apex:input id="Fax" value="{!fax}" type="tel" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Assistant:" for="Assistant" />
+                        <apex:inputText id="AssistantName" value="{!assistantName}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:outputLabel value="Assistant Phone:" for="AssistantPhone" />
+                        <apex:inputText id="AssistantPhone" value="{!assistantPhone}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                    If you would also like to send a note to {!contactOwnerName} you may enter it here:
+
+                    <apex:outputPanel layout="block" styleClass="form-group" >
+                        <apex:inputTextarea id="noteToOwner" value="{!messageToOwner}" styleClass="form-control" />
+                    </apex:outputPanel>
+
+                </apex:outputPanel>
+
+                <!-- Submit changes button-->
+                <apex:outputPanel id="submitChanges" layout="block" styleClass="row" >
+                    <apex:outputPanel layout="block" styleClass="col-xs-12 text-center">
+                        <apex:commandButton id="saveButton" action="{!processChange}" value="Continue" styleClass="btn btn-primary" />
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <apex:outputPanel id="success" layout="block" styleClass="row" rendered="{!status == 'Success'}" >
+                <apex:outputPanel id="successMessage" layout="block" styleClass="col-xs-12 col-sm-6 alert alert-success" >
+                    <p class="text-success">Your details have been updated!</p>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <!-- Error messages -->
+            <apex:outputPanel id="pageMessages" layout="block" styleClass="row" >
+                <apex:pageMessages />
+            </apex:outputPanel>
+
+            <apex:outputPanel id="footer" layout="block" styleClass="row">
+                <apex:outputPanel id="footerMessage" layout="block" styleClass="col-xs-12 col-sm-6" >
+                    <p class="text-info">Staying in Touch is powered by <apex:outputLink id="salesforceLink" target="_blank" value="http://www.salesforce.com" > Salesforce.</apex:outputLink></p>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

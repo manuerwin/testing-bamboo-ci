@@ -1,0 +1,98 @@
+<!-- 
+    Copyright (C) 2016  Manu Erwin
+
+    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    Type:       Visualforce Page for Mass Stay In Touch Requests
+    Purpose:    The user should be shown a page where they can adjust the text content of the email subject,
+                the text content of the body of the Stay In Touch email, view the list of fields that will be
+                displayed to the recipient, and adjust the text content of their email signature.
+
+                TODO: They can optionally tick a checkbox to be bcc’d on one of the emails.
+                They can optionally tick a checkbox to cause each email to be stored as an activity associated to the relevant Contact.
+                Note: this checkbox should not be shown if a custom setting to always store activities is true.
+                As standard List View functionality does not specifically restrict based on “Do Not Contact” Contact attributes,
+                they should be shown text at the top of the page notifying them that Contacts who have indicated
+                they do not wish to be contacted (Email Opt Out) have been excluded.
+
+                NOTE: this page creates custom Stay In Touch records behind the scenes and relies on Workflow Email Alerts to send
+                the actual stay in touch email and Process Builder to create the related Task recording the sent email.
+                
+    Used By:    Custom Contact List Button
+    History:    see https://github.com/manuerwin/salesforce-mass-stay-in-touch
+-->
+
+<apex:page standardController="Contact" recordSetVar="contacts" extensions="MSIT_AdjustEmailAndSend" >
+
+    <apex:sectionHeader id="sectionHeader" title="Mass Stay-in-Touch" subtitle="Confirmation" />
+
+    <apex:form id="theForm" >
+
+<!-- TODO
+        <apex:outputPanel id="limitExceeded" layout="block" rendered="{!dailyLimitExceeded}" >
+            <apex:commandButton id="cancelLimitExceeded" action="{!cancel}" value="Back" />
+        </apex:outputPanel>
+-->
+        <apex:pageMessages />
+
+        <apex:outputPanel id="reviewAndConfirm" layout="block" rendered="{!!emailSendAttempted}">
+            <apex:pageBlock id="reviewAndConfirmEntry" title="Review and Confirm" rendered="{!!dailyLimitExceeded}" >
+                <apex:pageBlockButtons id="pageButtons" >
+                    <apex:commandButton id="cancel" action="{!cancel}" value="Cancel" />
+                    <apex:commandButton id="send" action="{!createSITs}" value="Create Stay In Touch Requests" reRender="theForm" />
+                </apex:pageBlockButtons>
+                <apex:pageBlockSection id="numberOfRecipients" collapsible="false" columns="1" >
+                    You currently have <b>{!numberOfTargetedContacts} recipient(s)</b> selected to receive this email. <br />
+                    Note: Contacts without an email address and who have opted out of email have been excluded. <br />
+                    Note: This process creates a "Stay In Touch Request" record for each Contact.
+                </apex:pageBlockSection>
+
+                <apex:pageBlockSection id="emailSubjectAndNote" collapsible="false" columns="2" title="Email Subject and Email Template" >
+                    <apex:inputField id="emailSubject" value="{!proxySIT.Subject__c}" />
+                    <apex:outputPanel id="emailTemplateInfo" layout="block" >
+                        This <apex:outputLink id="emailTemplateLink" value="/{!emailTemplateId}" target="_blank"> email template </apex:outputLink> will be used for the mass email to your selected contacts, please ensure it is updated with your desired stay in touch greeting, messsage, and signature. Note: if you can't edit it, please request changes via your System Administrator.
+                    </apex:outputPanel>
+                </apex:pageBlockSection>
+
+                <apex:pageBlockSection id="emailFields" collapsible="false" columns="1" title="Fields for review and update" >
+                    The following fields will be available for the contact to confirm or update. Ensure they are included in the email template. If you need changes made to this list, talk to your administrator.
+                    <apex:outputText value="Salutation" />
+                    <apex:outputText value="First Name" />
+                    <apex:outputText value="Last Name" />
+                    <apex:outputText value="Mailing Street" />
+                    <apex:outputText value="Mailing City" />
+                    <apex:outputText value="Mailing State" />
+                    <apex:outputText value="Mailing PostalCode" />
+                    <apex:outputText value="Mailing Country" />
+                    <apex:outputText value="Email" />
+                    <apex:outputText value="Company" />
+                    <apex:outputText value="Title" />
+                    <apex:outputText value="Department" />
+                    <apex:outputText value="Phone" />
+                    <apex:outputText value="Mobile" />
+                    <apex:outputText value="Home Phone" />
+                    <apex:outputText value="Fax" />
+                    <apex:outputText value="Assistant" />
+                    <apex:outputText value="Assistant Phone" />
+                </apex:pageBlockSection>
+
+                <apex:pageBlockSection id="emailSignature" collapsible="false" columns="1" title="Email Signature" >
+                    <apex:inputField id="emailSignature" value="{!proxySIT.Signature__c}" />
+                </apex:pageBlockSection>
+
+            </apex:pageBlock>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="afterSending" layout="block" rendered="{!emailSendAttempted}" >
+            <!-- TODO: Show the number of SIT's created (aka the number of emails sent) - only if no errors!! -->
+            <apex:commandButton id="afterSendingButton" action="{!cancel}" value="Back" />
+        </apex:outputPanel>
+
+    </apex:form>
+</apex:page>
