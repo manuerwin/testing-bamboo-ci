@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Tasks for a User Story.
+This has a Lookup relationship to the parent User Story because??</description>
+    <enableActivities>false</enableActivities>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Description__c</fullName>
+        <description>Task description</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Task description</inlineHelpText>
+        <label>Description</label>
+        <length>32768</length>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Estimated_Hours__c</fullName>
+        <description>Number of hours for this Task</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of hours for this Task</inlineHelpText>
+        <label>Estimated Hours</label>
+        <precision>2</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>External_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>The unique case insensitive value for this record from another system. Only visible to Sys Admins.</description>
+        <externalId>true</externalId>
+        <inlineHelpText>The unique case insensitive value for this record from another system. Only visible to Sys Admins.</inlineHelpText>
+        <label>External Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Rank__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>The rank of this User Story Task in relation to all others for the parent User Story</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The rank of this User Story Task in relation to all others for the parent User Story</inlineHelpText>
+        <label>Rank</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Remaining_Hours_Indicator__c</fullName>
+        <description>Visual indicator of remaining hours.
+Red = above 66%
+Yellow = between 66% and 33%
+Green = less than 33%</description>
+        <externalId>false</externalId>
+        <formula>IF( Remaining_Hours_Percentage__c &gt; 0.66, 
+	IMAGE(&quot;/img/samples/flag_red.gif&quot;, &quot;red&quot;),
+	IF( Remaining_Hours_Percentage__c &gt; 0.33,
+		IMAGE(&quot;/img/samples/flag_yellow.gif&quot;, &quot;yellow&quot;),
+		IMAGE(&quot;/img/samples/flag_green.gif&quot;, &quot;green&quot;)
+	)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Visual indicator of remaining hours.
+Red = above 66%
+Yellow = between 66% and 33%
+Green = less than 33%</inlineHelpText>
+        <label>Remaining Hours Indicator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Remaining_Hours_Percentage__c</fullName>
+        <description>Remaining Hours divided by Estimated Hours</description>
+        <externalId>false</externalId>
+        <formula>Remaining_Hours__c /  Estimated_Hours__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Remaining Hours divided by Estimated Hours</inlineHelpText>
+        <label>Remaining Hours %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Remaining_Hours__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>Total number of hours remaining to complete this Task. The default value ensures the nightly SprintBurndown batch Apex doesn&apos;t fail.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Total number of hours remaining to complete this Task</inlineHelpText>
+        <label>Remaining Hours</label>
+        <precision>2</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sprint__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The grandparent Sprint for this User Story. Set by a Workflow Field Update on every change.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The grandparent Sprint for this User Story</inlineHelpText>
+        <label>Sprint</label>
+        <referenceTo>Sprint__c</referenceTo>
+        <relationshipName>User_Story_Tasks</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Status_Indicator__c</fullName>
+        <description>Visual indicator of Status</description>
+        <externalId>false</externalId>
+        <formula>IMAGE (
+	CASE(Status__c , 
+		&quot;Done&quot;, &quot;/img/samples/flag_green.gif&quot;,
+		&quot;Verify&quot;, &quot;/img/samples/flag_yellow.gif&quot;,
+		&quot;In Progress&quot;, &quot;/img/samples/flag_yellow.gif&quot;,
+		&quot;Not Started&quot;, &quot;/img/samples/flag_red.gif&quot;, 
+		&quot;/s.gif&quot;), 
+	&quot;User Story Status&quot;
+)</formula>
+        <inlineHelpText>Visual indicator of Status</inlineHelpText>
+        <label>Status Indicator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <description>Status of this Task</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Status of this Task</inlineHelpText>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Not Started</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Verify</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Done</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Task_Id__c</fullName>
+        <description>Unique value for this Task</description>
+        <displayFormat>T-{000}</displayFormat>
+        <externalId>false</externalId>
+        <inlineHelpText>Unique value for this Task</inlineHelpText>
+        <label>Task Id</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>Task_Rank__c</fullName>
+        <description>Combination of the Status and Rank. Used for sorting related lists, list views etc</description>
+        <externalId>false</externalId>
+        <formula>CASE( TEXT( Status__c ),
+	&apos;Not Started&apos;, &apos;0-&apos;,
+	&apos;In Progress&apos;, &apos;1-&apos;,
+	&apos;Verify&apos;, &apos;2-&apos;,
+	&apos;Done&apos;, &apos;3-&apos;,
+	&apos;99-&apos;)
+&amp;
+IF(Rank__c &lt; 10, &apos;00&apos; &amp; TEXT( Rank__c ),
+	IF(Rank__c &lt; 100, &apos;0&apos; &amp; TEXT( Rank__c ),
+TEXT( Rank__c )))</formula>
+        <inlineHelpText>Rank of this Task by Status, Not Started = 0, In Progress = 1, Verify = 2, Done = 3</inlineHelpText>
+        <label>Task Rank</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>User_Story__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The parent User Story</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The parent User Story</inlineHelpText>
+        <label>User Story</label>
+        <referenceTo>User_Story__c</referenceTo>
+        <relationshipLabel>User Story Tasks</relationshipLabel>
+        <relationshipName>User_Story_Tasks</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <label>User Story Task</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>Sprint__c</columns>
+        <columns>User_Story__c</columns>
+        <columns>Rank__c</columns>
+        <columns>NAME</columns>
+        <columns>Estimated_Hours__c</columns>
+        <columns>Remaining_Hours__c</columns>
+        <columns>Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Task Title</label>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>User Story Tasks</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Sprint__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>User_Story__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Estimated_Hours__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Remaining_Hours__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Task_Rank__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
+        <searchResultsAdditionalFields>User_Story__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Task_Id__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Description__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Estimated_Hours__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Remaining_Hours__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <fullName>US_Tasks_Not_Created_On_Cancelled_US</fullName>
+        <active>true</active>
+        <description>On insert of a User Story Task, it is an error if the the parent User Story Status is &apos;Cancelled&apos;.</description>
+        <errorConditionFormula>AND(
+    ISNEW(),
+    TEXT( User_Story__r.Status__c ) == &apos;Cancelled&apos;
+)</errorConditionFormula>
+        <errorMessage>User Story Tasks can not be created on &apos;Cancelled&apos; User Stories</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>US_Tasks_Not_Created_On_Done_User_Story</fullName>
+        <active>true</active>
+        <description>On insert of a User Story Task, it is an error if the the parent User Story Status is &apos;Done&apos;.</description>
+        <errorConditionFormula>AND(
+    ISNEW(),
+    TEXT( User_Story__r.Status__c ) == &apos;Done&apos;
+)</errorConditionFormula>
+        <errorMessage>User Story Tasks can not be created on &apos;Done&apos; User Stories</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Prioritise_and_Assign</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Prioritise and Assign</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/PrioritiseAssignUserStories</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Virtual_Wall</fullName>
+        <availability>online</availability>
+        <description>Open the Virtual Wall VF page for the grandparent Sprint</description>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Virtual Wall</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/VirtualWall?id={!User_Story_Task__c.SprintId__c}</url>
+    </webLinks>
+</CustomObject>
